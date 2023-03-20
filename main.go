@@ -63,13 +63,16 @@ func loopToUpdateStatusInfo(statusInfo *StatusInfo, statusInfoChannel chan Statu
 }
 
 func loopToProcessTask(statusInfoChannel chan StatusInfo) {
-
-	statusInfo := StatusInfo{executingTime: time.Now(), isExecutingATask: false}
-	statusInfoChannel <- statusInfo
-
 	for {
+		fmt.Println("Changing status info to notify that I'm not executing any task")
+		statusInfo := StatusInfo{executingTime: time.Now(), isExecutingATask: false}
+		statusInfo.executingTime = time.Now()
+		statusInfo.isExecutingATask = false
+		statusInfoChannel <- statusInfo
 
-		fmt.Println("Changing status info to notify that I'm executing a task")
+		time.Sleep(5 * time.Second)
+
+		fmt.Println("Changing status info to notify that I'm about to execute a task")
 		statusInfo.executingTime = time.Now()
 		statusInfo.isExecutingATask = true
 		statusInfoChannel <- statusInfo
@@ -77,12 +80,5 @@ func loopToProcessTask(statusInfoChannel chan StatusInfo) {
 		//This represents the execution of a test
 		fmt.Println("I'm executing a task...")
 		time.Sleep(10 * time.Second)
-
-		fmt.Println("Changing status info to notify that I'm not executing any task")
-		statusInfo.executingTime = time.Now()
-		statusInfo.isExecutingATask = false
-		statusInfoChannel <- statusInfo
-
-		time.Sleep(2 * time.Second)
 	}
 }
